@@ -47,7 +47,7 @@
 
             <hr/>
 
-            <dl class="dl-horizontal dl-small">
+            <dl class="dl-horizontal">
                 <dt>Open Date</dt><dd>{{ $comp->open_date->format('jS F Y') }} (00:00 GMT)</dd>
                 <dt>Close Date</dt><dd>{{ $comp->close_date->format('jS F Y') }} (23:59 GMT)</dd>
                 @if ($comp->isVoted())
