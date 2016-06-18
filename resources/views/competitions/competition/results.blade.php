@@ -38,6 +38,7 @@
                 <h3>Other Entries</h3>
                 <ul class="media-list">
             @endif
+            {? $shot = $entry->screenshots->first(); ?}
             {? $prev_rank = $result->rank; ?}
             <li class="media" data-id="{{ $entry->id }}">
                 <div class="media-body">
@@ -57,10 +58,24 @@
                             @endif
                         </h3>
                     </div>
+                    <div class="visible-xs-block text-center">
+                        <a href="#" class="gallery-button img-thumbnail">
+                            @if ($shot)
+                                <img class="media-object" src="{{ asset('uploads/competition/'.$shot->image_thumb) }}" alt="Screenshot" />
+                            @else
+                                <img class="media-object" src="{{ asset('images/no-screenshot-320.png') }}" alt="Screenshot" />
+                            @endif
+                        </a>
+                        @if ($entry->screenshots->count() > 1)
+                            <button class="btn btn-info btn-block gallery-button" type="button">
+                                <span class="glyphicon glyphicon-picture"></span>
+                                + {{ $entry->screenshots->count()-1 }} more screenshot{{ $entry->screenshots->count() == 2 ? '' : 's' }}
+                            </button>
+                        @endif
+                    </div>
                     <div class="bbcode">{!! $result->content_html !!}</div>
                 </div>
-                <div class="media-right">
-                    {? $shot = $entry->screenshots->first(); ?}
+                <div class="media-right hidden-xs">
                     <a href="#" class="gallery-button img-thumbnail">
                         @if ($shot)
                             <img class="media-object" src="{{ asset('uploads/competition/'.$shot->image_thumb) }}" alt="Screenshot" />
