@@ -11,74 +11,90 @@
                 <a href="{{ act('competition-judging', 'view', $comp->id) }}" class="btn btn-inverse btn-xs"><span class="glyphicon glyphicon-eye-open"></span> Manage Entries</a>
             @endif
         @endif
-        <h1>Competition brief: {{ $comp->name }}</h1>
+        <h1>Competition: {{ $comp->name }}</h1>
         <ol class="breadcrumb">
             <li><a href="{{ act('competition', 'index') }}">Competitions</a></li>
-            <li class="active">View Brief</li>
+            <li class="active">View competition</li>
         </ol>
     </hc>
-    <div class="row competition-brief">
-        <div class="col-lg-4 col-lg-push-8 col-md-5 col-md-push-7">
 
-            <div class="competition-status">
-                <span class="comp-status-message">Competition Status:</span>
-                <span class="comp-status">{{ $comp->getStatusText() }}</span>
-                @if ($comp->isOpen())
-                    <div id="countdown" class="countdown"></div>
-                @elseif ($comp->isVotingOpen())
-                    <a href="{{ act('competition', 'vote', $comp->id) }}" class="btn btn-success btn-lg">{{ $comp->canVote() ? 'Vote Now' : 'View Entries' }}</a>
-                @elseif ($comp->isJudging() && $comp->canJudge())
-                    <a href="{{ act('competition-judging', 'view', $comp->id) }}" class="btn btn-inverse btn-lg"><span class="glyphicon glyphicon-eye-open"></span> Go to Judging Panel</a>
-                    <hr/>
-                    <a href="{{ act('competition-judging', 'preview', $comp->id) }}" class="btn btn-success btn-xs"><span class="glyphicon glyphicon-eye-open"></span> Preview Results</a>
-                @elseif ($comp->isClosed())
-                    <a href="{{ act('competition', 'results', $comp->id) }}" class="btn btn-success btn-lg"><span class="glyphicon glyphicon-eye-open"></span> View Results</a>
+    {?
+        $open_time = $comp->getOpenTime();
+        $close_time = $comp->getCloseTime();
+        $vote_open_time = $comp->getVotingOpenTime();
+        $vote_close_time = $comp->getVotingCloseTime();
+        $actual_closed = $vote_close_time == null ? $close_time : $vote_close_time;
+        $days_since_close = $actual_closed->diffInDays();
+        $collapse = $comp->isClosed() && $days_since_close <= 30;
+    ?}
+
+    @if ($collapse)
+        <p class="text-center">
+            <button id="collapse-button" class="btn btn-default" type="button" data-toggle="collapse" data-target="#brief-container">
+                <span class="glyphicon glyphicon-chevron-down"></span>
+                Competition brief hidden - click to show
+                <span class="glyphicon glyphicon-chevron-down"></span>
+            </button>
+        </p>
+    @endif
+
+    <div class="collapse {{ $collapse ? '' : 'in' }}" id="brief-container">
+        <div class="row competition-brief">
+            <div class="col-lg-4 col-lg-push-8 col-md-5 col-md-push-7">
+
+                <div class="competition-status">
+                    <span class="comp-status-message">Competition Status:</span>
+                    <span class="comp-status">{{ $comp->getStatusText() }}</span>
+                    @if ($comp->isOpen())
+                        <div id="countdown" class="countdown"></div>
+                    @elseif ($comp->isVotingOpen())
+                        <a href="{{ act('competition', 'vote', $comp->id) }}" class="btn btn-success btn-lg">{{ $comp->canVote() ? 'Vote Now' : 'View Entries' }}</a>
+                    @elseif ($comp->isJudging() && $comp->canJudge())
+                        <a href="{{ act('competition-judging', 'view', $comp->id) }}" class="btn btn-inverse btn-lg"><span class="glyphicon glyphicon-eye-open"></span> Go to Judging Panel</a>
+                        <hr/>
+                        <a href="{{ act('competition-judging', 'preview', $comp->id) }}" class="btn btn-success btn-xs"><span class="glyphicon glyphicon-eye-open"></span> Preview Results</a>
+                    @elseif ($comp->isClosed())
+                        <a href="#results" class="btn btn-success btn-lg"><span class="glyphicon glyphicon-eye-open"></span> View Results</a>
+                    @endif
+                </div>
+
+                <dl class="dl-horizontal">
+                    <dt>Open Date</dt><dd>@date($open_time)</dd>
+                    <dt>Close Date</dt><dd>@date($close_time)</dd>
+                    @if ($comp->isVoted())
+                    <dt>Voting Open Date</dt><dd>@date($vote_open_time)</dd>
+                    <dt>Voting Close Date</dt><dd>@date($vote_close_time)</dd>
+                    @endif
+                    <dt>Type</dt><dd>{{ $comp->type->name }}</dd>
+                    <dt>Judging Type</dt><dd>{{ $comp->judge_type->name }}</dd>
+                    <dt>Allowed Engines</dt><dd>{{ implode(', ', $comp->engines->map(function($x) { return $x->name; })->toArray() ) }}</dd>
+                    @if (count($comp->judges) > 0)
+                    <dt>Judges</dt>
+                    <dd>
+                        {? $i = 0 ?}
+                        @foreach ($comp->judges as $judge)
+                            {!! $i++ != 0 ? '&bull;' : '' !!}
+                            @avatar($judge inline)
+                        @endforeach
+                    </dd>
+                    @endif
+                </dl>
+
+                <hr class="visible-xs-block visible-sm-block" />
+
+            </div>
+            <div class="col-lg-8 col-lg-pull-4 col-md-7 col-md-pull-5 brief-column">
+                <div class="bbcode">{!! $comp->brief_html !!}</div>
+                @if ($comp->brief_attachment)
+                    <div class="well well-sm">
+                        Attached file:
+                        <a href="{{ asset('uploads/competition/attachments/'.$comp->brief_attachment) }}" class="btn btn-success btn-xs">
+                            <span class="glyphicon glyphicon-download-alt"></span>
+                            Click to download
+                        </a>
+                    </div>
                 @endif
             </div>
-
-            {?
-                $open_time = $comp->getOpenTime();
-                $close_time = $comp->getCloseTime();
-                $vote_open_time = $comp->getVotingOpenTime();
-                $vote_close_time = $comp->getVotingCloseTime();
-            ?}
-
-            <dl class="dl-horizontal">
-                <dt>Open Date</dt><dd>@date($open_time)</dd>
-                <dt>Close Date</dt><dd>@date($close_time)</dd>
-                @if ($comp->isVoted())
-                <dt>Voting Open Date</dt><dd>@date($vote_open_time)</dd>
-                <dt>Voting Close Date</dt><dd>@date($vote_close_time)</dd>
-                @endif
-                <dt>Type</dt><dd>{{ $comp->type->name }}</dd>
-                <dt>Judging Type</dt><dd>{{ $comp->judge_type->name }}</dd>
-                <dt>Allowed Engines</dt><dd>{{ implode(', ', $comp->engines->map(function($x) { return $x->name; })->toArray() ) }}</dd>
-                @if (count($comp->judges) > 0)
-                <dt>Judges</dt>
-                <dd>
-                    {? $i = 0 ?}
-                    @foreach ($comp->judges as $judge)
-                        {!! $i++ != 0 ? '&bull;' : '' !!}
-                        @avatar($judge inline)
-                    @endforeach
-                </dd>
-                @endif
-            </dl>
-
-            <hr class="visible-xs-block visible-sm-block" />
-
-        </div>
-        <div class="col-lg-8 col-lg-pull-4 col-md-7 col-md-pull-5 brief-column">
-            <div class="bbcode">{!! $comp->brief_html !!}</div>
-            @if ($comp->brief_attachment)
-                <div class="well well-sm">
-                    Attached file:
-                    <a href="{{ asset('uploads/competition/attachments/'.$comp->brief_attachment) }}" class="btn btn-success btn-xs">
-                        <span class="glyphicon glyphicon-download-alt"></span>
-                        Click to download
-                    </a>
-                </div>
-            @endif
         </div>
     </div>
 
@@ -113,6 +129,7 @@
     @endif
     @if ($comp->isClosed())
 
+        <a id="results"></a>
         <hc>
             <h1>
                 Results
@@ -147,22 +164,24 @@
                     {? $prev_rank = $result->rank; ?}
                     {? $result = $comp->results->where('entry_id', $entry->id)->first(); ?}
                     <li class="media media-panel" data-id="{{ $entry->id }}">
-                        @if ($result->rank > 0)
-                            <div class="ribbon">
+                        <div class="ribbon {{ $result->rank > 0 ? 'info' : '' }}">
+                            <div class="right">
                                 @if ($entry->file_location)
                                     <a href="{{ $entry->getLinkUrl() }}" class="btn btn-success btn-xs"><span class="glyphicon glyphicon-download-alt"></span> Download</a>
                                 @endif
-                                @avatar($entry->user small show_name=false)
-                                @if ($result->rank == 1)
-                                    <h2>1st Place - @avatar($entry->user text)</h2>
-                                @elseif ($result->rank == 2)
-                                    <h2>2nd Place - @avatar($entry->user text)</h2>
-                                @elseif ($result->rank == 3)
-                                    <h2>3rd Place - @avatar($entry->user text)</h2>
-                                @endif
-                                <h3>{{ $entry->title }}</h3>
                             </div>
-                        @endif
+                            <div class="left">
+                                @avatar($entry->user small show_name=false)
+                            </div>
+                            @if ($result->rank == 1)
+                                <h2>1st Place - @avatar($entry->user text)</h2>
+                            @elseif ($result->rank == 2)
+                                <h2>2nd Place - @avatar($entry->user text)</h2>
+                            @elseif ($result->rank == 3)
+                                <h2>3rd Place - @avatar($entry->user text)</h2>
+                            @endif
+                            <h3>{{ $entry->title }}</h3>
+                        </div>
                         <div class="media-body">
                             <div class="visible-sm-block visible-xs-block text-center">
                                 <div style="display: inline-block;">
@@ -212,5 +231,11 @@
 @section('scripts')
     <script type="text/javascript">
         $('#countdown').countdown({until: new Date({{ $comp->getCloseTime()->format('U') }} * 1000), description: 'Closes in:'});
+        $('#brief-container').on('show.bs.collapse', function() {
+            $('#collapse-button').parent().slideUp(function() {
+                $('#collapse-button').parent().remove();
+            });
+        });
     </script>
+    @include('competitions._gallery_javascript')
 @endsection

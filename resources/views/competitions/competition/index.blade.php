@@ -14,7 +14,7 @@
         <li class="media media-panel">
             <div class="media-body">
                 <div class="media-heading">
-                    <h2><a href="{{ act('competition', $comp->isClosed() ? 'results' : 'brief', $comp->id) }}">{{ $comp->name }}</a></h2>
+                    <h2><a href="{{ act('competition', 'brief', $comp->id) }}">{{ $comp->name }}</a></h2>
                     <strong>{{ $comp->getStatusText() }}</strong> &bull;
                     {{ $comp->type->name }} &bull;
                     {{ $comp->judge_type->name }}
