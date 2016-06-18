@@ -15,7 +15,7 @@
         </ol>
     </hc>
     <div class="row competition-brief">
-        <div class="col-lg-4 col-lg-push-8 col-md-6 col-md-push-6">
+        <div class="col-lg-4 col-lg-push-8 col-md-5 col-md-push-7">
 
             <div class="text-center">
                 <span class="comp-status-message">Competition Status:</span>
@@ -70,7 +70,7 @@
             </dl>
 
         </div>
-        <div class="col-lg-8 col-lg-pull-4 col-md-6 col-md-pull-6">
+        <div class="col-lg-8 col-lg-pull-4 col-md-7 col-md-pull-5">
             <div class="bbcode">{!! $comp->brief_html !!}</div>
             @if ($comp->brief_attachment)
                 <div class="well well-sm">
