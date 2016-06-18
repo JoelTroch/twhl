@@ -58,7 +58,7 @@
                             @endif
                         </h3>
                     </div>
-                    <div class="visible-xs-block text-center">
+                    <div class="visible-sm-block visible-xs-block text-center">
                         <a href="#" class="gallery-button img-thumbnail">
                             @if ($shot)
                                 <img class="media-object" src="{{ asset('uploads/competition/'.$shot->image_thumb) }}" alt="Screenshot" />
@@ -75,7 +75,7 @@
                     </div>
                     <div class="bbcode">{!! $result->content_html !!}</div>
                 </div>
-                <div class="media-right hidden-xs">
+                <div class="media-right hidden-xs hidden-sm">
                     <a href="#" class="gallery-button img-thumbnail">
                         @if ($shot)
                             <img class="media-object" src="{{ asset('uploads/competition/'.$shot->image_thumb) }}" alt="Screenshot" />
