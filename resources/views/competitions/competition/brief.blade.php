@@ -15,7 +15,7 @@
         </ol>
     </hc>
     <div class="row">
-        <div class="col-md-5 col-md-push-7">
+        <div class="col-md-4 col-md-push-8">
 
             <div class="text-center">
                 <span class="comp-status-message">Competition Status:</span>
@@ -46,8 +46,8 @@
             </div>
 
             <hr/>
-            
-            <dl class="dl-horizontal dl-small">
+
+            <dl class="">
                 <dt>Open Date</dt><dd>{{ $comp->open_date->format('jS F Y') }} (00:00 GMT)</dd>
                 <dt>Close Date</dt><dd>{{ $comp->close_date->format('jS F Y') }} (23:59 GMT)</dd>
                 @if ($comp->isVoted())
@@ -70,7 +70,7 @@
             </dl>
 
         </div>
-        <div class="col-md-7 col-md-pull-5">
+        <div class="col-md-8 col-md-pull-4">
             <div class="bbcode">{!! $comp->brief_html !!}</div>
             @if ($comp->brief_attachment)
                 <div class="well well-sm">
