@@ -39,8 +39,8 @@
             <hr/>
 
             {?
-                $open_time = $comp->open_date;
-                $close_time = $comp->close_date->copy()->setTime(23, 59, 00);
+                $open_time = $comp->getOpenTime();
+                $close_time = $comp->getCloseTime();
                 $vote_open_time = $comp->getVotingOpenTime();
                 $vote_close_time = $comp->getVotingCloseTime();
             ?}
