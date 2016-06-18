@@ -15,35 +15,39 @@
         </ol>
     </hc>
     <div class="row">
-        <div class="col-md-6 text-center">
-            <span class="comp-status-message">Competition Status:</span>
-            <span class="comp-status">{{ $comp->getStatusText() }}</span>
-            @if ($comp->isOpen())
-                <div id="countdown" class="countdown"></div>
-                @if ($comp->canJudge())
-                    <hr />
-                    <a href="{{ act('competition-judging', 'view', $comp->id) }}" class="btn btn-inverse btn-xs"><span class="glyphicon glyphicon-eye-open"></span> View Entries</a>
+        <div class="col-md-5 col-md-push-7">
+
+            <div class="text-center">
+                <span class="comp-status-message">Competition Status:</span>
+                <span class="comp-status">{{ $comp->getStatusText() }}</span>
+                @if ($comp->isOpen())
+                    <div id="countdown" class="countdown"></div>
+                    @if ($comp->canJudge())
+                        <hr />
+                        <a href="{{ act('competition-judging', 'view', $comp->id) }}" class="btn btn-inverse btn-xs"><span class="glyphicon glyphicon-eye-open"></span> View Entries</a>
+                    @endif
+                @elseif ($comp->isVotingOpen())
+                    <a href="{{ act('competition', 'vote', $comp->id) }}" class="btn btn-success btn-lg">{{ $comp->canVote() ? 'Vote Now' : 'View Entries' }}</a>
+                    @if ($comp->canJudge())
+                        <hr />
+                        <a href="{{ act('competition-judging', 'view', $comp->id) }}" class="btn btn-inverse btn-xs"><span class="glyphicon glyphicon-eye-open"></span> Edit Entries / Results</a>
+                    @endif
+                @elseif ($comp->isJudging() && $comp->canJudge())
+                    <a href="{{ act('competition-judging', 'view', $comp->id) }}" class="btn btn-inverse btn-lg"><span class="glyphicon glyphicon-eye-open"></span> Go to Judging Panel</a>
+                    <hr/>
+                    <a href="{{ act('competition-judging', 'preview', $comp->id) }}" class="btn btn-success btn-xs"><span class="glyphicon glyphicon-eye-open"></span> Preview Results</a>
+                @elseif ($comp->isClosed())
+                    <a href="{{ act('competition', 'results', $comp->id) }}" class="btn btn-success btn-lg"><span class="glyphicon glyphicon-eye-open"></span> View Results</a>
+                    @if ($comp->canJudge())
+                        <hr />
+                        <a href="{{ act('competition-judging', 'view', $comp->id) }}" class="btn btn-inverse btn-xs"><span class="glyphicon glyphicon-eye-open"></span> Edit Entries / Results</a>
+                    @endif
                 @endif
-            @elseif ($comp->isVotingOpen())
-                <a href="{{ act('competition', 'vote', $comp->id) }}" class="btn btn-success btn-lg">{{ $comp->canVote() ? 'Vote Now' : 'View Entries' }}</a>
-                @if ($comp->canJudge())
-                    <hr />
-                    <a href="{{ act('competition-judging', 'view', $comp->id) }}" class="btn btn-inverse btn-xs"><span class="glyphicon glyphicon-eye-open"></span> Edit Entries / Results</a>
-                @endif
-            @elseif ($comp->isJudging() && $comp->canJudge())
-                <a href="{{ act('competition-judging', 'view', $comp->id) }}" class="btn btn-inverse btn-lg"><span class="glyphicon glyphicon-eye-open"></span> Go to Judging Panel</a>
-                <hr/>
-                <a href="{{ act('competition-judging', 'preview', $comp->id) }}" class="btn btn-success btn-xs"><span class="glyphicon glyphicon-eye-open"></span> Preview Results</a>
-            @elseif ($comp->isClosed())
-                <a href="{{ act('competition', 'results', $comp->id) }}" class="btn btn-success btn-lg"><span class="glyphicon glyphicon-eye-open"></span> View Results</a>
-                @if ($comp->canJudge())
-                    <hr />
-                    <a href="{{ act('competition-judging', 'view', $comp->id) }}" class="btn btn-inverse btn-xs"><span class="glyphicon glyphicon-eye-open"></span> Edit Entries / Results</a>
-                @endif
-            @endif
-        </div>
-        <div class="col-md-6">
-            <dl class="dl-horizontal">
+            </div>
+
+            <hr/>
+            
+            <dl class="dl-horizontal dl-small">
                 <dt>Open Date</dt><dd>{{ $comp->open_date->format('jS F Y') }} (00:00 GMT)</dd>
                 <dt>Close Date</dt><dd>{{ $comp->close_date->format('jS F Y') }} (23:59 GMT)</dd>
                 @if ($comp->isVoted())
@@ -64,19 +68,21 @@
                 </dd>
                 @endif
             </dl>
+
+        </div>
+        <div class="col-md-7 col-md-pull-5">
+            <div class="bbcode">{!! $comp->brief_html !!}</div>
+            @if ($comp->brief_attachment)
+                <div class="well well-sm">
+                    Attached file:
+                    <a href="{{ asset('uploads/competition/attachments/'.$comp->brief_attachment) }}" class="btn btn-success btn-xs">
+                        <span class="glyphicon glyphicon-download-alt"></span>
+                        Click to download
+                    </a>
+                </div>
+            @endif
         </div>
     </div>
-    <hr/>
-    <div class="bbcode">{!! $comp->brief_html !!}</div>
-    @if ($comp->brief_attachment)
-        <div class="well well-sm">
-            Attached file:
-            <a href="{{ asset('uploads/competition/attachments/'.$comp->brief_attachment) }}" class="btn btn-success btn-xs">
-                <span class="glyphicon glyphicon-download-alt"></span>
-                Click to download
-            </a>
-        </div>
-    @endif
 
     @if (count($rule_groups) > 0)
         <hr />
