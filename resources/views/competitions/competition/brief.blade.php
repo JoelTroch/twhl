@@ -7,6 +7,9 @@
             <a href="{{ act('competition-admin', 'delete', $comp->id) }}" class="btn btn-danger btn-xs"><span class="glyphicon glyphicon-remove"></span> Delete</a>
             <a href="{{ act('competition-admin', 'edit-rules', $comp->id) }}" class="btn btn-info btn-xs"><span class="glyphicon glyphicon-list-alt"></span> Edit Rules</a>
             <a href="{{ act('competition-admin', 'edit', $comp->id) }}" class="btn btn-primary btn-xs"><span class="glyphicon glyphicon-pencil"></span> Edit</a>
+            @if ($comp->canJudge())
+                <a href="{{ act('competition-judging', 'view', $comp->id) }}" class="btn btn-inverse btn-xs"><span class="glyphicon glyphicon-eye-open"></span> Manage Entries</a>
+            @endif
         @endif
         <h1>Competition brief: {{ $comp->name }}</h1>
         <ol class="breadcrumb">
@@ -22,37 +25,32 @@
                 <span class="comp-status">{{ $comp->getStatusText() }}</span>
                 @if ($comp->isOpen())
                     <div id="countdown" class="countdown"></div>
-                    @if ($comp->canJudge())
-                        <hr />
-                        <a href="{{ act('competition-judging', 'view', $comp->id) }}" class="btn btn-inverse btn-xs"><span class="glyphicon glyphicon-eye-open"></span> View Entries</a>
-                    @endif
                 @elseif ($comp->isVotingOpen())
                     <a href="{{ act('competition', 'vote', $comp->id) }}" class="btn btn-success btn-lg">{{ $comp->canVote() ? 'Vote Now' : 'View Entries' }}</a>
-                    @if ($comp->canJudge())
-                        <hr />
-                        <a href="{{ act('competition-judging', 'view', $comp->id) }}" class="btn btn-inverse btn-xs"><span class="glyphicon glyphicon-eye-open"></span> Edit Entries / Results</a>
-                    @endif
                 @elseif ($comp->isJudging() && $comp->canJudge())
                     <a href="{{ act('competition-judging', 'view', $comp->id) }}" class="btn btn-inverse btn-lg"><span class="glyphicon glyphicon-eye-open"></span> Go to Judging Panel</a>
                     <hr/>
                     <a href="{{ act('competition-judging', 'preview', $comp->id) }}" class="btn btn-success btn-xs"><span class="glyphicon glyphicon-eye-open"></span> Preview Results</a>
                 @elseif ($comp->isClosed())
                     <a href="{{ act('competition', 'results', $comp->id) }}" class="btn btn-success btn-lg"><span class="glyphicon glyphicon-eye-open"></span> View Results</a>
-                    @if ($comp->canJudge())
-                        <hr />
-                        <a href="{{ act('competition-judging', 'view', $comp->id) }}" class="btn btn-inverse btn-xs"><span class="glyphicon glyphicon-eye-open"></span> Edit Entries / Results</a>
-                    @endif
                 @endif
             </div>
 
             <hr/>
 
+            {?
+                $open_time = $comp->open_date;
+                $close_time = $comp->close_date->copy()->setTime(23, 59, 00);
+                $vote_open_time = $comp->getVotingOpenTime();
+                $vote_close_time = $comp->getVotingCloseTime();
+            ?}
+
             <dl class="dl-horizontal">
-                <dt>Open Date</dt><dd>{{ $comp->open_date->format('jS F Y') }} (00:00 GMT)</dd>
-                <dt>Close Date</dt><dd>{{ $comp->close_date->format('jS F Y') }} (23:59 GMT)</dd>
+                <dt>Open Date</dt><dd>@date($open_time)</dd>
+                <dt>Close Date</dt><dd>@date($close_time)</dd>
                 @if ($comp->isVoted())
-                <dt>Voting Open Date</dt><dd>{{ $comp->getVotingOpenTime()->format('jS F Y') }} (01:00 GMT)</dd>
-                <dt>Voting Close Date</dt><dd>{{ $comp->getVotingCloseTime()->format('jS F Y') }} (23:59 GMT)</dd>
+                <dt>Voting Open Date</dt><dd>@date($vote_open_time)</dd>
+                <dt>Voting Close Date</dt><dd>@date($vote_close_time)</dd>
                 @endif
                 <dt>Type</dt><dd>{{ $comp->type->name }}</dd>
                 <dt>Judging Type</dt><dd>{{ $comp->judge_type->name }}</dd>
@@ -69,8 +67,10 @@
                 @endif
             </dl>
 
+            <hr class="visible-xs-block visible-sm-block" />
+
         </div>
-        <div class="col-lg-8 col-lg-pull-4 col-md-7 col-md-pull-5">
+        <div class="col-lg-8 col-lg-pull-4 col-md-7 col-md-pull-5 brief-column">
             <div class="bbcode">{!! $comp->brief_html !!}</div>
             @if ($comp->brief_attachment)
                 <div class="well well-sm">
@@ -213,6 +213,6 @@
 
 @section('scripts')
     <script type="text/javascript">
-        $('#countdown').countdown({until: new Date({{ $comp->getCloseTime()->format('U') }} * 1000), description: 'Until the competition is closed'});
+        $('#countdown').countdown({until: new Date({{ $comp->getCloseTime()->format('U') }} * 1000), description: 'Closes in:'});
     </script>
 @endsection

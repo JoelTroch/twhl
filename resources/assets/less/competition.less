@@ -33,11 +33,29 @@
   }
 }
 
+.countdown {
+  position: relative;
+
+  .countdown-descr {
+    position: relative;
+    top: -3.8em;
+  }
+  .countdown-show4 {
+    position: relative;
+    top: 1.8em;
+  }
+}
+
 .competition-brief {
+  @media (min-width: @screen-md-min) {
+    .brief-column {
+      border-right: 1px solid @gray-lighter;
+    }
+  }
   dl.dl-horizontal {
     text-align: left;
-    dt { width: 120px; }
-    dd { margin-left: 140px; }
+    dt { width: 130px; }
+    dd { margin-left: 145px; }
 
     @media (max-width: @screen-xs-max) {
       dd { margin-left: 20px; }
