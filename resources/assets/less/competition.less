@@ -47,6 +47,11 @@
 }
 
 .competition-brief {
+  .competition-status {
+    text-align: center;
+    margin-bottom: 20px;
+  }
+
   @media (min-width: @screen-md-min) {
     .brief-column {
       border-right: 1px solid @gray-lighter;
@@ -57,6 +62,32 @@
 .competition-rules {
   li > .bbcode {
     margin-bottom: 0;
+  }
+}
+
+.competition-results {
+  .ribbon {
+    padding: 10px;
+    background: @alert-info-bg;
+    border-bottom: 1px solid @alert-info-border;
+    margin: -15px -15px 15px;
+
+    .avatar.small {
+      float: left;
+      margin: 0;
+      padding: 0;
+      padding-right: 10px;
+    }
+    .btn {
+      float: right;
+      margin-top: 12px;
+    }
+    h2, h3 {
+      margin: 0;
+    }
+    h2 {
+      margin-bottom: 7px;
+    }
   }
 }
 
