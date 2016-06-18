@@ -87,7 +87,7 @@
     @if (count($rule_groups) > 0)
         <hr />
         <h3>Competition Rules</h3>
-        <ul>
+        <ul class="competition-rules">
             @foreach ($rule_groups as $group => $rules)
                 <li>
                     <strong>{{ $group }}</strong>
