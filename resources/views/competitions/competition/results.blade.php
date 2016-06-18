@@ -52,45 +52,37 @@
                             <h2>3rd Place</h2>
                         @endif
                         <h3>
-                            {{ $entry->title }} &mdash; By @avatar($entry->user inline)
+                            {{ $entry->title }}
+                        </h3>
+                        <h4>
+                            By @avatar($entry->user inline)
                             @if ($entry->file_location)
                                 <a href="{{ $entry->getLinkUrl() }}" class="btn btn-success btn-xs"><span class="glyphicon glyphicon-download-alt"></span> Download</a>
                             @endif
-                        </h3>
+                        </h4>
                     </div>
-                    <div class="visible-sm-block visible-xs-block text-center">
-                        <div style="display: inline-block;">
-                            <a href="#" class="gallery-button img-thumbnail">
-                                @if ($shot)
-                                    <img class="media-object" src="{{ asset('uploads/competition/'.$shot->image_thumb) }}" alt="Screenshot" />
-                                @else
-                                    <img class="media-object" src="{{ asset('images/no-screenshot-320.png') }}" alt="Screenshot" />
+                    <div class="row">
+                        <div class="col-md-4 col-md-push-8">
+                            <div style="display: inline-block;">
+                                <a href="#" class="gallery-button img-thumbnail">
+                                    @if ($shot)
+                                        <img class="media-object" src="{{ asset('uploads/competition/'.$shot->image_thumb) }}" alt="Screenshot" />
+                                    @else
+                                        <img class="media-object" src="{{ asset('images/no-screenshot-320.png') }}" alt="Screenshot" />
+                                    @endif
+                                </a>
+                                @if ($entry->screenshots->count() > 1)
+                                    <button class="btn btn-info btn-block gallery-button" type="button">
+                                        <span class="glyphicon glyphicon-picture"></span>
+                                        + {{ $entry->screenshots->count()-1 }} more screenshot{{ $entry->screenshots->count() == 2 ? '' : 's' }}
+                                    </button>
                                 @endif
-                            </a>
-                            @if ($entry->screenshots->count() > 1)
-                                <button class="btn btn-info btn-block gallery-button" type="button">
-                                    <span class="glyphicon glyphicon-picture"></span>
-                                    + {{ $entry->screenshots->count()-1 }} more screenshot{{ $entry->screenshots->count() == 2 ? '' : 's' }}
-                                </button>
-                            @endif
+                            </div>
+                        </div>
+                        <div class="col-md-pull-4 col-md-8">
+                            <div class="bbcode">{!! $result->content_html !!}</div>
                         </div>
                     </div>
-                    <div class="bbcode">{!! $result->content_html !!}</div>
-                </div>
-                <div class="media-right hidden-xs hidden-sm">
-                    <a href="#" class="gallery-button img-thumbnail">
-                        @if ($shot)
-                            <img class="media-object" src="{{ asset('uploads/competition/'.$shot->image_thumb) }}" alt="Screenshot" />
-                        @else
-                            <img class="media-object" src="{{ asset('images/no-screenshot-320.png') }}" alt="Screenshot" />
-                        @endif
-                    </a>
-                    @if ($entry->screenshots->count() > 1)
-                        <button class="btn btn-info btn-block gallery-button" type="button">
-                            <span class="glyphicon glyphicon-picture"></span>
-                            + {{ $entry->screenshots->count()-1 }} more screenshot{{ $entry->screenshots->count() == 2 ? '' : 's' }}
-                        </button>
-                    @endif
                 </div>
             </li>
         @endforeach
