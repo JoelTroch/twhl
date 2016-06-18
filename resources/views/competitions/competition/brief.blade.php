@@ -14,8 +14,8 @@
             <li class="active">View Brief</li>
         </ol>
     </hc>
-    <div class="row">
-        <div class="col-md-4 col-md-push-8">
+    <div class="row competition-brief">
+        <div class="col-lg-4 col-lg-push-8 col-md-6 col-md-push-6">
 
             <div class="text-center">
                 <span class="comp-status-message">Competition Status:</span>
@@ -47,7 +47,7 @@
 
             <hr/>
 
-            <dl class="">
+            <dl class="dl-horizontal dl-small">
                 <dt>Open Date</dt><dd>{{ $comp->open_date->format('jS F Y') }} (00:00 GMT)</dd>
                 <dt>Close Date</dt><dd>{{ $comp->close_date->format('jS F Y') }} (23:59 GMT)</dd>
                 @if ($comp->isVoted())
@@ -70,7 +70,7 @@
             </dl>
 
         </div>
-        <div class="col-md-8 col-md-pull-4">
+        <div class="col-lg-8 col-lg-pull-4 col-md-6 col-md-pull-6">
             <div class="bbcode">{!! $comp->brief_html !!}</div>
             @if ($comp->brief_attachment)
                 <div class="well well-sm">
