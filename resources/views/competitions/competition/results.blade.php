@@ -62,7 +62,7 @@
                         </h4>
                     </div>
                     <div class="row">
-                        <div class="col-md-4 col-md-push-8">
+                        <div class="col-md-5 col-md-push-7 text-center">
                             <div style="display: inline-block;">
                                 <a href="#" class="gallery-button img-thumbnail">
                                     @if ($shot)
@@ -79,7 +79,7 @@
                                 @endif
                             </div>
                         </div>
-                        <div class="col-md-pull-4 col-md-8">
+                        <div class="col-md-pull-5 col-md-7">
                             <div class="bbcode">{!! $result->content_html !!}</div>
                         </div>
                     </div>
